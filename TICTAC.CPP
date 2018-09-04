@@ -1,0 +1,182 @@
+#include <stdio.h>
+#include <conio.h>
+#include <graphics.h>
+#include <string.h>
+#include <stdlib.h>
+
+void draw_table();
+int check_table(char table[]);
+void print_values(char table[]);
+int check_flag(char *table, int);
+
+int main()
+{
+	char table[9] , key;
+	int pos , _new=1, temp_player=1,r=1;
+	int gd=DETECT, gm;
+	char another='y';
+	clrscr();
+	initgraph(&gd, &gm, "c:\\tc\\bgi");
+	while(another=='y')
+	{
+		while(r<=9)
+		{
+
+			if(_new==1)
+			{
+				strcpy(table,"345678903");
+				_new=0;
+			}
+			cleardevice();
+
+			outtextxy(10,10,"By Raghav.");
+			print_values(table);
+
+			if (temp_player==1)
+				  outtextxy(100,100,"Player 1");
+			else
+				  outtextxy(100,100,"Player 2");
+
+			draw_table();
+			while(1)
+			{
+				key = getch();
+				pos = (int) key - 49;
+				if(key=='0')
+				{
+					closegraph();
+					exit(1);
+				}
+				if(key >=49 && key <= 57)
+				{
+					if(check_flag(table,pos))
+					{
+						outtextxy(350,160,"This position is already filled.");
+						outtextxy(350,170,"try another position");
+					}
+					else
+					{
+						if(temp_player==1)
+							table[pos]='1';
+						else
+							table[pos]='2';
+
+						break;
+					}
+				}
+				else
+				{
+					outtextxy(350,160,"Wrong key..");
+				}
+			}
+
+
+			print_values(table);
+
+			if(check_table(table))
+			{
+				outtextxy(350,150,"Congrats you won the match...");
+				break;
+
+			}
+
+			if(temp_player==1)
+				temp_player++;
+			else
+				temp_player--;
+			r++;
+		}
+
+		if(!check_table(table))
+		{
+			outtextxy(350,150,"Match drawn..");
+		}
+		outtextxy(350,160,"Want to play another game?");
+		outtextxy(350,170,"Press 'y'to continue or press any");
+		outtextxy(350,180,"other key to exit");
+		another=getch();
+		if(another=='y')
+		{
+
+			_new=1;
+			temp_player=1;
+			r=1;
+			continue;
+		}
+		else
+		{
+			break;
+		}
+	}
+	closegraph();
+	return 0;
+
+}
+
+void draw_table()
+{
+
+	outtextxy(100,90,"Turn :");
+	line(100,200,250,200);
+	line(100,250,250,250);
+	line(150,150,150,300);
+	line(200,150,200,300);
+
+}
+int check_table(char table[])
+{
+	if(((table[0]==table[1]) && (table[1]==table[2])) || ((table[3]==table[4]) && (table[4]==table[5])) || ((table[6]==table[7]) && (table[7]==table[8])))
+		return 1;
+	else if(((table[0]==table[3]) && (table[3]==table[6])) || ((table[1]==table[4]) && (table[4]==table[7])) || ((table[2]==table[5])&&(table[5]==table[8])))
+		return 1;
+	else if(((table[0]==table[4]) && (table[4]==table[8])) || ((table[2]==table[4]) && (table[4]==table[6])))
+		return 1;
+	else
+		return 0;
+}
+void print_values(char table[])
+{
+	int _pos=1;
+	int i=0,x,y;
+	for(i=0;i<9;i++)
+	{
+
+	  if(_pos==1 || _pos==4 || _pos==7)
+			x=120;
+		else if(_pos==2 || _pos==5 || _pos==8)
+			x=168;
+		else if(_pos==3 || _pos==6 || _pos==9)
+			x=220;
+
+		if(_pos==7 || _pos==8 || _pos==9)
+			y=170;
+		else if(_pos==4 || _pos==5 || _pos==6)
+			y=220;
+		else if(_pos==1 || _pos==2 || _pos==3)
+			y=270;
+
+
+		if(table[i]=='1')
+		{
+			settextstyle(0,HORIZ_DIR,3);
+			outtextxy(x,y,"1");
+			settextstyle(0,HORIZ_DIR,1);
+		}
+		else if(table[i]=='2')
+		{
+			settextstyle(0,HORIZ_DIR,3);
+			outtextxy(x,y,"2");
+			settextstyle(0,HORIZ_DIR,1);
+		}
+	  _pos++;
+	}
+
+
+}
+int check_flag(char *table,int pos)
+{
+	if(table[pos]=='1' || table[pos] =='2')
+		return 1;
+	else
+		return 0;
+}
